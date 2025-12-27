@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soundwave Music</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1db954;
+            --secondary: #191414;
+            --dark: #121212;
+            --light: #b3b3b3;
+        }
+       
+        body {
+            background: linear-gradient(135deg, var(--dark) 0%, #1a1a1a 100%);
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+       
+        .sidebar {
+            background: var(--secondary);
+            height: 100vh;
+            position: fixed;
+            padding: 20px 0;
+            border-right: 1px solid rgba(255,255,255,0.1);
+        }
+       
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+            padding: 0 20px 30px;
+        }
+       
+        .nav-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: var(--light);
+        }
+       
+        .nav-item:hover, .nav-item.active {
+            background: rgba(29, 185, 84, 0.1);
+            color: #fff;
+            border-left: 3px solid var(--primary);
+        }
+       
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+        }
+       
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+       
+        .search-bar {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 25px;
+            padding: 10px 20px;
+            color: #fff;
+            width: 400px;
+        }
+       
+        .search-bar:focus {
+            outline: none;
+            background: rgba(255,255,255,0.15);
+        }
+       
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+       
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+       
+        .album-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+       
+        .album-card:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-5px);
+        }
+       
+        .album-cover {
+            width: 100%;
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, var(--primary), #1ed760);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            position: relative;
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+        }
+       
+        .album-cover::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+        }
+       
+        .album-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+       
+        .play-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: all 0.3s;
+            cursor: pointer;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        }
+       
+        .album-card:hover .play-btn {
+            opacity: 1;
+        }
+       
+        .player {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, #181818, #282828);
+            padding: 15px 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            z-index: 1000;
+        }
+       
+        .player-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+       
+        .now-playing {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+        }
+       
+        .now-playing-cover {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+       
+        .now-playing-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+       
+        .controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+       
+        .control-buttons {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+       
+        .control-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+       
+        .control-btn:hover {
+            color: var(--primary);
+            transform: scale(1.1);
+        }
+       
+        .control-btn.play {
+            width: 40px;
+            height: 40px;
+            background: #fff;
+            color: #000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+       
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 2px;
+            cursor: pointer;
+            position: relative;
+        }
+       
+        .progress {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 2px;
+            width: 35%;
+            position: relative;
+        }
+       
+        .progress::after {
+            content: '';
+            position: absolute;
+            right: -6px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 12px;
+            height: 12px;
+            background: #fff;
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+       
+        .progress-bar:hover .progress::after {
+            opacity: 1;
+        }
+       
+        .volume {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            justify-content: flex-end;
+        }
+       
+        .volume-bar {
+            width: 100px;
+            height: 4px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 2px;
+            cursor: pointer;
+            position: relative;
+        }
+       
+        .volume-level {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 2px;
+            width: 70%;
+        }
+       
+        .section-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+       
+        .time {
+            font-size: 12px;
+            color: var(--light);
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar col-2">
+        <div class="logo">
+            <i class="fas fa-music"></i> Soundwave
+        </div>
+        <div class="nav-item active">
+            <i class="fas fa-home"></i> Home
+        </div>
+        <div class="nav-item">
+            <i class="fas fa-search"></i> Search
+        </div>
+        <div class="nav-item">
+            <i class="fas fa-book"></i> Your Library
+        </div>
+        <div class="nav-item mt-4">
+            <i class="fas fa-plus-circle"></i> Create Playlist
+        </div>
+        <div class="nav-item">
+            <i class="fas fa-heart"></i> Liked Songs
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <input type="text" class="search-bar" placeholder="What do you want to listen to?">
+            <div class="user-profile">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <span>User</span>
+            </div>
+        </div>
+
+        <div class="section-title">Good evening</div>
+       
+        <div class="row">
+            <div class="col-md-4 col-lg-3">
+                <div class="album-card">
+                    <div class="album-cover">
+                        <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400&h=400&fit=crop" alt="Tamil Top 50">
+                        <div class="play-btn">
+                            <i class="fas fa-play" style="margin-left: 3px;"></i>
+                        </div>
+                    </div>
+                    <h5>Tamil Top 50</h5>
+                    <p class="text-muted small">Trending Tamil hits</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-3">
+                <div class="album-card">
+                    <div class="album-cover">
+                        <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=400&fit=crop" alt="AR Rahman">
+                        <div class="play-btn">
+                            <i class="fas fa-play" style="margin-left: 3px;"></i>
+                        </div>
+                    </div>
+                    <h5>AR Rahman Hits</h5>
+                    <p class="text-muted small">Best of AR Rahman</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-3">
+                <div class="album-card">
+                    <div class="album-cover">
+                        <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=400&h=400&fit=crop" alt="Melody">
+                        <div class="play-btn">
+                            <i class="fas fa-play" style="margin-left: 3px;"></i>
+                        </div>
+                    </div>
+                    <h5>Melody Mashup</h5>
+                    <p class="text-muted small">Tamil melodies mix</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-3">
+                <div class="album-card">
+                    <div class="album-cover">
+                        <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&h=400&fit=crop" alt="Kuthu">
+                        <div class="play-btn">
+                            <i class="fas fa-play" style="margin-left: 3px;"></i>
+                        </div>
+                    </div>
+                    <h5>Kuthu Beats</h5>
+                    <p class="text-muted small">High energy dance hits</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-title mt-4">Recently Played</div>
+       
+        <div class="row">
+            <div class="col-md-4 col-lg-3">
+                <div class="album-card">
+                    <div class="album-cover">
+                        <img src="https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=400&h=400&fit=crop" alt="Ilayaraja">
+                        <div class="play-btn">
+                            <i class="fas fa-play" style="margin-left: 3px;"></i>
+                        </div>
+                    </div>
+                    <h5>Ilayaraja Classics</h5>
+                    <p class="text-muted small">Legendary compositions</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-3">
+                <div class="album-card">
+                    <div class="album-cover">
+                        <img src="https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=400&h=400&fit=crop" alt="Anirudh">
+                        <div class="play-btn">
+                            <i class="fas fa-play" style="margin-left: 3px;"></i>
+                        </div>
+                    </div>
+                    <h5>Anirudh Special</h5>
+                    <p class="text-muted small">Latest & greatest</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-3">
+                <div class="album-card">
+                    <div class="album-cover">
+                        <img src="https://images.unsplash.com/photo-1487180144351-b8472da7d491?w=400&h=400&fit=crop" alt="90s Hits">
+                        <div class="play-btn">
+                            <i class="fas fa-play" style="margin-left: 3px;"></i>
+                        </div>
+                    </div>
+                    <h5>90s Tamil Hits</h5>
+                    <p class="text-muted small">Golden era songs</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-3">
+                <div class="album-card">
+                    <div class="album-cover">
+                        <img src="https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=400&h=400&fit=crop" alt="Yuvan">
+                        <div class="play-btn">
+                            <i class="fas fa-play" style="margin-left: 3px;"></i>
+                        </div>
+                    </div>
+                    <h5>Yuvan's Best</h5>
+                    <p class="text-muted small">Yuvan Shankar Raja hits</p>
+                </div>
+            </div>
+        </div>
+       
+        <div style="height: 100px;"></div>
+    </div>
+
+    <!-- Music Player -->
+    <div class="player">
+        <div class="player-content">
+            <div class="now-playing">
+                <div class="now-playing-cover">
+                    <img src="https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=200&h=200&fit=crop" alt="Now Playing">
+                </div>
+                <div>
+                    <div><strong>Vaathi Coming</strong></div>
+                    <div class="text-muted small">Anirudh Ravichander</div>
+                </div>
+                <i class="fas fa-heart ms-3" style="color: var(--light); cursor: pointer;"></i>
+            </div>
+           
+            <div class="controls">
+                <div class="control-buttons">
+                    <button class="control-btn"><i class="fas fa-random"></i></button>
+                    <button class="control-btn"><i class="fas fa-step-backward"></i></button>
+                    <button class="control-btn play"><i class="fas fa-play"></i></button>
+                    <button class="control-btn"><i class="fas fa-step-forward"></i></button>
+                    <button class="control-btn"><i class="fas fa-redo"></i></button>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
+                    <span class="time">1:24</span>
+                    <div class="progress-bar">
+                        <div class="progress"></div>
+                    </div>
+                    <span class="time">3:45</span>
+                </div>
+            </div>
+           
+            <div class="volume">
+                <i class="fas fa-volume-up" style="cursor: pointer;"></i>
+                <div class="volume-bar">
+                    <div class="volume-level"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Play/Pause functionality
+        document.querySelector('.control-btn.play').addEventListener('click', function() {
+            const icon = this.querySelector('i');
+            if(icon.classList.contains('fa-play')) {
+                icon.classList.remove('fa-play');
+                icon.classList.add('fa-pause');
+            } else {
+                icon.classList.remove('fa-pause');
+                icon.classList.add('fa-play');
+            }
+        });
+       
+        // Heart icon toggle
+        document.querySelectorAll('.fa-heart').forEach(heart => {
+            heart.addEventListener('click', function() {
+                this.style.color = this.style.color === 'rgb(29, 185, 84)' ? '#b3b3b3' : '#1db954';
+            });
+        });
+    </script>
+</body>
+</html>
